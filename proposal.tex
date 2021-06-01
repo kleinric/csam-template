@@ -1,0 +1,207 @@
+\documentclass[a4paper,twoside,12pt]{report}
+% Richard Klein (2020,2021)
+
+% Include Packages
+%\usepackage[a4paper,inner=3.5cm,outer=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}  % Set page margins
+\usepackage{fullpage}
+\usepackage{float}                  % Allows 'Here and Only Here' [H] for Floats
+\usepackage{url}                    % \url{} command
+\usepackage{charter}                  % Set font to Times
+\usepackage{graphicx}               % \includegraphics
+\usepackage{subfigure}              % Allow subfigures
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{parskip}
+\usepackage[all]{nowidow}
+\setnoclub[2]
+\setnowidow[2]
+
+% Referencing
+% Provides \Vref and \vref to indicate where a reference is.
+\usepackage{varioref} 
+% Hyperlinks references
+\usepackage[bookmarks=true,bookmarksopen=true]{hyperref} 
+% Provides \Cref, \cref, \Vref, \vref to include the type of reference: fig/eqn/tbl
+\usepackage{cleveref} 
+% Setup Hyperref
+\hypersetup{
+  colorlinks   = true,              %Colours links instead of ugly boxes
+  urlcolor     = blue,              %Colour for external hyperlinks
+  linkcolor    = blue,              %Colour of internal links
+  citecolor    = blue                %Colour of citations
+}
+% Names for Clever Ref
+\crefname{table}{table}{tables}
+\Crefname{table}{Table}{Tables}
+\crefname{figure}{figure}{figures}
+\Crefname{figure}{Figure}{Figures}
+\crefname{equation}{equation}{equations}
+\Crefname{equation}{Equation}{Equations}
+
+% Wits Citation Style
+\usepackage{natbib} \input{natbib-add}
+\bibliographystyle{named-wits}
+\bibpunct{[}{]}{;}{a}{}{}  % to get correct punctuation for bibliography
+\setlength{\skip\footins}{1.5cm}
+\newcommand{\citets}[1]{\citeauthor{#1}'s \citeyearpar{#1}}
+\renewcommand\bibname{References}  
+
+\pagestyle{headings}
+
+\pagestyle{plain}
+\pagenumbering{roman}
+
+\renewenvironment{abstract}{\ \vfill\begin{center}\textbf{Abstract}\end{center}\addcontentsline{toc}{section}{Abstract}}{\vfill\vfill\newpage}
+\newenvironment{declaration}{\ \vfill\begin{center}\textbf{Declaration}\end{center}\addcontentsline{toc}{section}{Declaration}}{\vfill\vfill\newpage}
+\newenvironment{acknowledgements}{\ \vfill\begin{center}\textbf{Acknowledgements}\end{center}\addcontentsline{toc}{section}{Acknowledgements}}{\vfill\vfill\newpage}
+
+\begin{document}
+\onecolumn
+\thispagestyle{empty}
+
+\setcounter{page}{0}
+\addcontentsline{toc}{chapter}{Preface}
+\ 
+\begin{center}
+  \vfill
+  {
+  \huge \bf \textsc{Title of Research}\\
+  \large Subtitle\\[20pt]
+  \large School of Computer Science \& Applied Mathematics\\
+  \large University of the Witwatersrand\\[20pt]
+  \normalsize
+  Your Name\\
+  Your Student Number\\[20pt]
+  Supervised by Dr McProfessorFace\\[10pt]
+  \today
+  }
+
+  \vfill
+  \vfill
+  \includegraphics[width=1.5cm]{images/wits}
+  \vspace{10pt}\\
+  \small{Ethics Clearance Number: XX/XX/XX}\\[10pt]
+  \small{A proposal submitted to the Faculty of Science, University of the Witwatersrand, Johannesburg,
+in partial fulfilment of the requirements for the degree of Bachelor of Science with Honours}\\
+\end{center}
+\vfill
+\newpage
+
+\pagestyle{plain}
+\setcounter{page}{1}
+
+\phantomsection
+\begin{abstract}
+Abstract things....
+\end{abstract}
+
+\phantomsection
+\begin{declaration}
+I, ---------, hereby declare the contents of this research proposal to be my own work.
+This proposal is submitted for the degree of Bachelor of Science with Honours in Computer Science at the University of the Witwatersrand.
+This work has not been submitted to any other university, or for any other degree.
+\end{declaration}
+
+\phantomsection
+\begin{acknowledgements}
+Thanks World.
+\end{acknowledgements}
+
+
+\phantomsection
+\addcontentsline{toc}{section}{Table of Contents}
+\tableofcontents
+\newpage
+\phantomsection
+\addcontentsline{toc}{section}{List of Figures}
+\listoffigures
+\newpage
+\phantomsection
+\addcontentsline{toc}{section}{List of Tables}
+\listoftables
+\newpage
+\pagenumbering{arabic}
+
+\chapter{Introduction}
+\section{Hello World}
+Introduction things...\\
+\section{Another Section}
+\subsection{This is a Subsection}
+\subsubsection{This is a subsubsection}
+This is just a paragraph
+\subsection{A Subsection about Citation Style}
+Citations are important. Citation style for Computer Science is:
+\begin{itemize}
+\item When used in the text, use the authors with the date in brackets:\\ \citet{klein17} say very important things.
+\item When used as a reference after a face, put everything in brackets:\\ Import things are true \citep{klein17}.
+\end{itemize}
+
+\subsection{Compiling}
+Remember to compile multiple times to resolve references. Usually:
+\begin{verbatim}
+pdflatex file.tex
+bibtex file
+pdflatex file.tex
+pdflatex file.tex
+\end{verbatim}
+
+
+\chapter{Floats}
+\LaTeX\ decides how to place images. It also does the referencing for you as seen in \Cref{fig:thing1}. If you have subimages, they should have their own captions and labels -- look into the subfig or subfigure packages.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.1\linewidth]{images/wits}
+	\caption{This is an image}
+	\label{fig:thing1}
+\end{figure}
+
+Figure captions are at the bottom. Table title are at the top of the table as seen in \Vref{tab:tab1}. There is a package called BookTabs which is \textit{way} better for tables and you should learn how to use that instead.
+
+\begin{table}[p]
+	\centering
+	\caption{Table Name}
+	\label{tab:tab1}
+\begin{tabular}{cc}
+	\hline
+	Col1 & Col2\\
+	\hline\hline 
+	R0,C0 & R0,C1 \\ 
+	R1,C0 & R1,C1 \\ 
+	\hline
+\end{tabular} 
+\end{table}
+
+Usually let \LaTeX\ handle the placement of floats unless you \textit{really} need to force it to do something else. The \texttt{float} package used above allows you to use \texttt{H} as the placement which means \textit{here and only here}. When using the float package, the placement options are:
+\begin{enumerate}
+\item h -- a gentle nudge to place it here if possible
+\item t -- top of a page
+\item b -- bottom of a page
+\item H -- here and only here, do not move it at all
+\item p -- on its own page
+\end{enumerate}
+
+
+\chapter{Some Referencing Tricks}
+CleverRef and VarioRef are helpful:
+\begin{itemize}
+	\item Normal Ref: See Figure \ref{fig:thing1}
+	\item CleverRef: See \Cref{fig:thing1} and \Cref{tab:tab1}
+	\item CleverRef+VarioRef: See \Vref{fig:thing1} and \Vref{tab:tab1}
+\end{itemize}
+
+\chapter{IDE/Editors}
+Overleaf has a great online editor for latex. Use it. 
+
+\appendix
+\chapter{Extra Stuff}\label{app:extra}
+\section{What is an appendix?}\label{app:whatis}
+
+An appendix is useful when there is information that you need to include, but breaks the flow of your document, e.g. a large number of figures/tables may need to be shown, but maybe only one needs to be in the text and the rest are just included for completeness.
+
+\nocite{*}
+
+\bibliography{references}\addcontentsline{toc}{chapter}{References}
+\end{document}

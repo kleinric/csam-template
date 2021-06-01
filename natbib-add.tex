@@ -1,0 +1,15 @@
+% Force natbib.sty to put citation labels in the reference list
+\makeatletter
+\renewcommand\NAT@biblabel[1]{\def\citeauthoryear##1##2{##1 ##2}[#1]\hfill}
+\renewcommand\NAT@bibsetup[1]{%
+  \setlength{\itemsep}{\bibsep}\setlength{\parsep}{\z@}}
+\def\@lbibitem[#1]#2{%
+  \if\relax\@extra@b@citeb\relax\else
+    \@ifundefined{br@#2\@extra@b@citeb}{}{%
+     \@namedef{br@#2}{\@nameuse{br@#2\@extra@b@citeb}}}\fi
+   \@ifundefined{b@#2\@extra@b@citeb}{\def\NAT@num{}}{\NAT@parse{#2}}%
+   \item[\hfil\hyper@natanchorstart{#2\@extra@b@citeb}\@biblabel{#1}%
+    \hyper@natanchorend]%
+    \NAT@ifcmd#1(@)(@)\@nil{#2}}
+\makeatother
+
