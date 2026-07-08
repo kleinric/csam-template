@@ -1,61 +1,39 @@
 \documentclass[a4paper,twoside,12pt]{report}
-% Richard Klein (2020,2021)
+% Richard Klein (2020,2021,2026)
 
-% Include Packages
-%\usepackage[a4paper,inner=3.5cm,outer=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}  % Set page margins
-\usepackage{fullpage}
-\usepackage{float}                  % Allows 'Here and Only Here' [H] for Floats
-\usepackage{url}                    % \url{} command
-\usepackage{charter}                  % Set font to Times
-\usepackage{graphicx}               % \includegraphics
-\usepackage{subfigure}              % Allow subfigures
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{amsthm}
-\usepackage{booktabs}
-\usepackage{parskip}
-\usepackage[all]{nowidow}
-\setnoclub[2]
-\setnowidow[2]
+\usepackage{witsresearch}   % Structural helpers, packages, and environments
 
-% Referencing
-% Provides \Vref and \vref to indicate where a reference is.
-\usepackage{varioref} 
-% Hyperlinks references
-\usepackage[bookmarks=true,bookmarksopen=true]{hyperref} 
-% Provides \Cref, \cref, \Vref, \vref to include the type of reference: fig/eqn/tbl
-\usepackage{cleveref} 
-% Setup Hyperref
-\hypersetup{
-  colorlinks   = true,              %Colours links instead of ugly boxes
-  urlcolor     = blue,              %Colour for external hyperlinks
-  linkcolor    = blue,              %Colour of internal links
-  citecolor    = blue                %Colour of citations
-}
-% Names for Clever Ref
-\crefname{table}{table}{tables}
-\Crefname{table}{Table}{Tables}
-\crefname{figure}{figure}{figures}
-\Crefname{figure}{Figure}{Figures}
-\crefname{equation}{equation}{equations}
-\Crefname{equation}{Equation}{Equations}
+% ===== CONFIGURE YOUR DOCUMENT HERE =====
+\newcommand{\name}{Your Name}
+\newcommand{\studentNumber}{Your Student Number}
+\newcommand{\supervisor}{Dr McProfessorFace}
 
-% Wits Citation Style
-\usepackage{natbib} \input{natbib-add}
-\bibliographystyle{named-wits}
-\bibpunct{[}{]}{;}{a}{}{}  % to get correct punctuation for bibliography
-\setlength{\skip\footins}{1.5cm}
-\newcommand{\citets}[1]{\citeauthor{#1}'s \citeyearpar{#1}}
-\renewcommand\bibname{References}  
+% Document type:  \proposal  or  \report
+% Degree (choose one):
+%   \cshons  \camhons  \bdahons  \cyberhons
+%   \msccwrr{CS|AI|DS|eScience|Robotics|Cyber|CAM}
+%   \csmsc  \cammsc            (full MSc)
+%   \csphd  \camphd            (PhD)
+\report
+\csmsc
 
-\pagestyle{headings}
-
-\pagestyle{plain}
-\pagenumbering{roman}
-
-\renewenvironment{abstract}{\ \vfill\begin{center}\textbf{Abstract}\end{center}\addcontentsline{toc}{section}{Abstract}}{\vfill\vfill\newpage}
-\newenvironment{declaration}{\ \vfill\begin{center}\textbf{Declaration}\end{center}\addcontentsline{toc}{section}{Declaration}}{\vfill\vfill\newpage}
-\newenvironment{acknowledgements}{\ \vfill\begin{center}\textbf{Acknowledgements}\end{center}\addcontentsline{toc}{section}{Acknowledgements}}{\vfill\vfill\newpage}
+% ===== AI DECLARATION =====
+% Declare your generative-AI usage. Either declare that you used none:
+%   \aideclareNone
+% or tick any that apply (each ticks its box on the AI declaration page):
+\aideclareIdeaGeneration
+\aideclareEditing
+\aideclareWriting
+%   \aideclareRelatedWork
+%   \aideclareMethods
+%   \aideclareDataAnalysis
+%   \aideclareTheory
+%   \aideclareCode
+%   \aideclarePresentation
+%   \aideclareCitation
+% List each tool you used (adds a row to the table); repeat as needed:
+\aideclareExtra{Elicit}{Literature Survery}
+%   \aideclareExtra{GitHub Copilot}{Code development}
 
 \begin{document}
 \onecolumn
@@ -72,9 +50,9 @@
   \large School of Computer Science \& Applied Mathematics\\
   \large University of the Witwatersrand\\[20pt]
   \normalsize
-  Your Name\\
-  Your Student Number\\[20pt]
-  Supervised by Dr McProfessorFace\\[10pt]
+  \name\\
+  \studentNumber\\[20pt]
+  Supervised by \supervisor\\[10pt]
   \today
   }
 
@@ -83,8 +61,8 @@
   \includegraphics[width=1.5cm]{images/wits}
   \vspace{10pt}\\
   \small{Ethics Clearance Number: XX/XX/XX}\\[10pt]
-  \small{A proposal submitted to the Faculty of Science, University of the Witwatersrand, Johannesburg,
-in partial fulfilment of the requirements for the degree of Bachelor of Science with Honours}\\
+  \small{A \thedoctype\ submitted to the Faculty of Science, University of the Witwatersrand, Johannesburg,
+in \thefulfilment\ of the requirements for the degree of\\ \thedegree\ in the field of \thefield}\\
 \end{center}
 \vfill
 \newpage
@@ -99,10 +77,17 @@ Abstract things....
 
 \phantomsection
 \begin{declaration}
-I, ---------, hereby declare the contents of this research proposal to be my own work.
-This proposal is submitted for the degree of Bachelor of Science with Honours in Computer Science at the University of the Witwatersrand.
-This work has not been submitted to any other university, or for any other degree.
+I, \name, hereby declare the contents of this \thedoctype\ to be my own work.
+This \thedoctype\ is submitted for the degree of \thedegree\ in the field of \thefield\ at the University of the Witwatersrand.
+This work has not been submitted to any other university, or for any other degree.\\
+
+\vspace{2em}
+\noindent\includegraphics[height=2cm]{images/signature.png}\\
+\noindent\name\\\today
+
 \end{declaration}
+
+\aideclarationpage
 
 \phantomsection
 \begin{acknowledgements}
@@ -193,7 +178,12 @@ CleverRef and VarioRef are helpful:
 \end{itemize}
 
 \chapter{IDE/Editors}
-Overleaf has a great online editor for latex. Use it. 
+Overleaf has a great online editor for latex. Use it. It has version history and sync with git built in. If your supervisor has a paid subscription, then invite them to your document and transfer ownership of the document to them. Then you will get all the paid features.
+
+% This will show all items from your bibtex file in the bibliography
+% Useful while writing, but don't use it in your final submission.  
+%\nocite{*}
+\bibliography{references}\addcontentsline{toc}{chapter}{References}
 
 \appendix
 \chapter{Extra Stuff}\label{app:extra}
@@ -201,7 +191,5 @@ Overleaf has a great online editor for latex. Use it.
 
 An appendix is useful when there is information that you need to include, but breaks the flow of your document, e.g. a large number of figures/tables may need to be shown, but maybe only one needs to be in the text and the rest are just included for completeness.
 
-\nocite{*}
 
-\bibliography{references}\addcontentsline{toc}{chapter}{References}
 \end{document}

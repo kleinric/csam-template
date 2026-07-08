@@ -1,0 +1,245 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{witsresearch}[2026/07/08 Wits Faculty of Science research document style]
+% Structural helpers for Wits research proposals/reports/dissertations/theses.
+% Richard Klein (2020,2021)
+
+% ===== Package dependencies =====
+%\RequirePackage[a4paper,inner=3.5cm,outer=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}  % Set page margins
+\RequirePackage{fullpage}
+\RequirePackage{float}                  % Allows 'Here and Only Here' [H] for Floats
+\RequirePackage{url}                    % \url{} command
+\RequirePackage{charter}                % Set font to Charter
+\RequirePackage{graphicx}               % \includegraphics
+\RequirePackage{subfigure}              % Allow subfigures
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{amsthm}
+\RequirePackage{booktabs}
+\RequirePackage{multicol}
+\RequirePackage{ifthen}
+\RequirePackage{parskip}
+\RequirePackage[all]{nowidow}
+\setnoclub[2]
+\setnowidow[2]
+
+% Referencing
+% Provides \Vref and \vref to indicate where a reference is.
+\RequirePackage{varioref}
+% Hyperlinks references
+\RequirePackage[bookmarks=true,bookmarksopen=true]{hyperref}
+% Provides \Cref, \cref, \Vref, \vref to include the type of reference: fig/eqn/tbl
+\RequirePackage{cleveref}
+% Setup Hyperref
+\hypersetup{
+  colorlinks   = true,              %Colours links instead of ugly boxes
+  urlcolor     = blue,              %Colour for external hyperlinks
+  linkcolor    = blue,              %Colour of internal links
+  citecolor    = blue                %Colour of citations
+}
+% Names for Clever Ref
+\crefname{table}{table}{tables}
+\Crefname{table}{Table}{Tables}
+\crefname{figure}{figure}{figures}
+\Crefname{figure}{Figure}{Figures}
+\crefname{equation}{equation}{equations}
+\Crefname{equation}{Equation}{Equations}
+
+% Wits Citation Style
+\RequirePackage{natbib} \input{natbib-add}
+\bibliographystyle{named-wits}
+\bibpunct{[}{]}{;}{a}{}{}  % to get correct punctuation for bibliography
+\setlength{\skip\footins}{1.5cm}
+\newcommand{\citets}[1]{\citeauthor{#1}'s \citeyearpar{#1}}
+\renewcommand\bibname{References}
+
+\pagestyle{headings}
+\pagestyle{plain}
+\pagenumbering{roman}
+
+% Empty tick box used on the AI declaration form.
+\newcommand{\checkbox}{\fbox{\rule{0pt}{1.1em}\rule{1.1em}{0pt}}\ }
+
+% ===== AI declaration tick boxes & flags =====
+% Mark drawn inside a ticked box.
+\newcommand{\aidemark}{\textbf{X}}
+% A fixed-size box; pass the mark to tick it, or nothing to leave it empty.
+% Metrics are identical whether ticked or empty so columns stay aligned.
+\newcommand{\aidebox}[1]{\fbox{\makebox[1.1em][c]{\rule[-0.15em]{0pt}{1.0em}#1}}\ }
+
+% Boolean state for each declarable use (all default to false/unticked).
+\newif\ifaidenone            % "I did NOT make use of generative AI tools"
+\newif\ifaideidea
+\newif\ifaiderelated
+\newif\ifaidemethods
+\newif\ifaidedata
+\newif\ifaidetheory
+\newif\ifaidecode
+\newif\ifaidepresentation
+\newif\ifaideediting
+\newif\ifaidewriting
+\newif\ifaidecitation
+
+% User-facing switches -- call these (e.g. in the config block) to tick boxes.
+\newcommand{\aideclareNone}{\aidenonetrue}
+\newcommand{\aideclareIdeaGeneration}{\aideideatrue}
+\newcommand{\aideclareRelatedWork}{\aiderelatedtrue}
+\newcommand{\aideclareMethods}{\aidemethodstrue}
+\newcommand{\aideclareDataAnalysis}{\aidedatatrue}
+\newcommand{\aideclareTheory}{\aidetheorytrue}
+\newcommand{\aideclareCode}{\aidecodetrue}
+\newcommand{\aideclarePresentation}{\aidepresentationtrue}
+\newcommand{\aideclareEditing}{\aideeditingtrue}
+\newcommand{\aideclareWriting}{\aidewritingtrue}
+\newcommand{\aideclareCitation}{\aidecitationtrue}
+
+% Extra tools declared for the "specify below" table. Each call appends a row.
+%   \aideclareExtra{Tool name}{Used for?}
+\newcounter{aideextra}
+\newcounter{aidepad}
+\newcommand{\aiderows}{}
+\newcommand{\aideclareExtra}[2]{%
+  \stepcounter{aideextra}%
+  \expandafter\def\expandafter\aiderows\expandafter{\aiderows #1 & #2 \tabularnewline[1.0em]\hline}%
+}
+% Minimum number of table rows (declared + blank) so the form stays complete.
+\newcommand{\aideminrows}{4}
+% Assemble declared rows, then pad with blank rows up to the minimum.
+\newcommand{\aidetablebody}{}
+\newcommand{\aidebuildtablebody}{%
+  \let\aidetablebody\aiderows
+  \setcounter{aidepad}{\value{aideextra}}%
+  \loop\ifnum\value{aidepad}<\aideminrows\relax
+    \expandafter\def\expandafter\aidetablebody\expandafter{\aidetablebody & \tabularnewline[1.0em]\hline}%
+    \stepcounter{aidepad}%
+  \repeat
+}
+
+% ===== Document type & degree setup =====
+% Internal state -- set these via the convenience commands below.
+% \thesubmissionmode : "proposal" or "report" (set by \proposal / \report)
+% \thereportname     : what the final examinable document is called for this
+%                      degree (research report / dissertation / thesis)
+% \thereportfulfilment : "partial fulfilment" or "fulfilment" for the report
+\newcommand{\thesubmissionmode}{proposal}
+\newcommand{\thedegree}{Bachelor of Science with Honours}
+\newcommand{\thefield}{Computer Science}
+\newcommand{\thereportname}{research report}
+\newcommand{\thereportfulfilment}{partial fulfilment}
+
+% Derived: a proposal is always a "proposal" in "partial fulfilment";
+% a report takes its name and fulfilment wording from the chosen degree.
+\newcommand{\thedoctype}{%
+  \ifthenelse{\equal{\thesubmissionmode}{proposal}}{proposal}{\thereportname}}
+\newcommand{\thefulfilment}{%
+  \ifthenelse{\equal{\thesubmissionmode}{proposal}}{partial fulfilment}{\thereportfulfilment}}
+
+% Convenience command for setting degree, field, report name, and report
+% fulfilment wording at once.
+\newcommand{\setdegree}[4]{%
+  \renewcommand{\thedegree}{#1}%
+  \renewcommand{\thefield}{#2}%
+  \renewcommand{\thereportname}{#3}%
+  \renewcommand{\thereportfulfilment}{#4}%
+}
+
+% --- Document type ---
+\newcommand{\proposal}{\renewcommand{\thesubmissionmode}{proposal}}
+\newcommand{\report}{\renewcommand{\thesubmissionmode}{report}}
+
+% --- Honours (report: research report, partial fulfilment) ---
+\newcommand{\cshons}{\setdegree{Bachelor of Science with Honours}{Computer Science}{research report}{partial fulfilment}}
+\newcommand{\camhons}{\setdegree{Bachelor of Science with Honours}{Computational and Applied Mathematics}{research report}{partial fulfilment}}
+\newcommand{\bdahons}{\setdegree{Bachelor of Science with Honours}{Big Data Analytics}{research report}{partial fulfilment}}
+\newcommand{\cyberhons}{\setdegree{Bachelor of Science with Honours}{Cybersecurity}{research report}{partial fulfilment}}
+
+% --- MSc by coursework and research report (report: research report, partial fulfilment) ---
+% Usage: \msccwrr{CS|AI|DS|eScience|Robotics|Cyber|CAM}
+\newcommand{\msccwrr}[1]{%
+  \renewcommand{\thedegree}{Master of Science by coursework and research report}%
+  \renewcommand{\thereportname}{research report}%
+  \renewcommand{\thereportfulfilment}{partial fulfilment}%
+  \ifthenelse{\equal{#1}{CS}}{\renewcommand{\thefield}{Computer Science}}{%
+  \ifthenelse{\equal{#1}{AI}}{\renewcommand{\thefield}{Artificial Intelligence}}{%
+  \ifthenelse{\equal{#1}{DS}}{\renewcommand{\thefield}{Data Science}}{%
+  \ifthenelse{\equal{#1}{eScience}}{\renewcommand{\thefield}{eScience}}{%
+  \ifthenelse{\equal{#1}{Robotics}}{\renewcommand{\thefield}{Robotics}}{%
+  \ifthenelse{\equal{#1}{Cyber}}{\renewcommand{\thefield}{Cybersecurity}}{%
+  \ifthenelse{\equal{#1}{CAM}}{\renewcommand{\thefield}{Computational and Applied Mathematics}}{%
+  \renewcommand{\thefield}{#1}}}}}}}}%
+}
+
+% --- Full MSc (report: dissertation, fulfilment) ---
+\newcommand{\csmsc}{\setdegree{Master of Science}{Computer Science}{dissertation}{fulfilment}}
+\newcommand{\cammsc}{\setdegree{Master of Science}{Computational and Applied Mathematics}{dissertation}{fulfilment}}
+
+% --- PhD (report: thesis, fulfilment) ---
+\newcommand{\csphd}{\setdegree{Doctor of Philosophy}{Computer Science}{thesis}{fulfilment}}
+\newcommand{\camphd}{\setdegree{Doctor of Philosophy}{Computational and Applied Mathematics}{thesis}{fulfilment}}
+
+% ===== Preface environments =====
+\renewenvironment{abstract}{\ \vfill\begin{center}\textbf{Abstract}\end{center}\addcontentsline{toc}{section}{Abstract}}{\vfill\vfill\newpage}
+\newenvironment{declaration}{\ \vfill\begin{center}\textbf{Declaration}\end{center}\addcontentsline{toc}{section}{Declaration}}{\vfill\vfill\newpage}
+\newenvironment{aideclaration}{\noindent\textbf{Wits University Faculty of Science post-graduate student AI declaration}\addcontentsline{toc}{section}{AI Declaration}\par\vspace{0.8em}}{\vfill\newpage}
+\newenvironment{acknowledgements}{\ \vfill\begin{center}\textbf{Acknowledgements}\end{center}\addcontentsline{toc}{section}{Acknowledgements}}{\vfill\vfill\newpage}
+
+% ===== Wits Faculty of Science AI declaration page =====
+% Emits the full standard AI declaration form on its own page.
+\newcommand{\aideclarationpage}{%
+\phantomsection
+\begingroup
+\setlength{\parskip}{2pt}
+\begin{aideclaration}
+I understand that the use of generative AI tools (such as ChatGPT or similar) without explicitly declaring such use constitutes a form of plagiarism and is classified by Wits University as academic misconduct.
+
+I declare that in the course of conducting the research towards my degree or in the preparation of this \thedoctype\ (select one by marking with an X):
+
+\noindent I \textbf{did not} make use of generative AI tools \aidebox{\ifaidenone\aidemark\fi}
+
+\noindent I \textbf{did} make use of generative AI tools for the following (tick all that apply):
+
+{\setlength{\parskip}{0pt}
+\begin{enumerate}\setlength{\itemsep}{0pt}\setlength{\topsep}{1pt}\setlength{\parsep}{0pt}\setlength{\partopsep}{0pt}
+\item Idea Generation (research problem/design, hypothesis)\hfill\aidebox{\ifaideidea\aidemark\fi}
+\item Sourcing Related Work (summarising, identifying sources)\hfill\aidebox{\ifaiderelated\aidemark\fi}
+\item Methods and Experiment Design (experiment setup, model tuning)\hfill\aidebox{\ifaidemethods\aidemark\fi}
+\item Data Analysis (presentation, coding, interpretation)\hfill\aidebox{\ifaidedata\aidemark\fi}
+\item Theoretical Development (theorem proving, conceptual analysis)\hfill\aidebox{\ifaidetheory\aidemark\fi}
+\item Code Development (generating algorithms, writing scripts)\hfill\aidebox{\ifaidecode\aidemark\fi}
+\item Presentation (rendering graphics, formatting)\hfill\aidebox{\ifaidepresentation\aidemark\fi}
+\item Editing (grammar, readability)\hfill\aidebox{\ifaideediting\aidemark\fi}
+\item Writing (text generation, document structuring)\hfill\aidebox{\ifaidewriting\aidemark\fi}
+\item Citation Formatting (structuring, organising)\hfill\aidebox{\ifaidecitation\aidemark\fi}
+\end{enumerate}
+}
+
+\vspace{0.4em}
+
+If other uses were involved, please specify below:
+
+\vspace{0.2em}
+\aidebuildtablebody
+\noindent\begin{tabular}{|p{0.46\textwidth}|p{0.46\textwidth}|}
+\hline
+\textbf{Generative AI tool used (list all)} & \textbf{Used for?} \\[0.25em]
+\hline
+\aidetablebody
+\end{tabular}
+
+\vspace{0.4em}
+
+If generative AI tools were used as an integral part of the experimental design or in the direct execution of my research, I confirm that details of this use are clearly outlined in the relevant experimental/methodology chapters of my thesis/dissertation/research report.
+
+\vspace{0.6em}
+
+\noindent\textbf{Student number:}~\studentNumber
+
+\vspace{0.6em}
+
+\noindent\textbf{Candidate signature:}~\raisebox{-0.35cm}{\includegraphics[height=1cm]{images/signature.png}}
+
+\vspace{0.6em}
+
+\noindent\textbf{Date:}~\today
+\end{aideclaration}
+\endgroup
+}
