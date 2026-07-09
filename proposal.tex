@@ -183,7 +183,10 @@ Overleaf has a great online editor for latex. Use it. It has version history and
 % This will show all items from your bibtex file in the bibliography
 % Useful while writing, but don't use it in your final submission.  
 %\nocite{*}
-\bibliography{references}\addcontentsline{toc}{chapter}{References}
+\clearpage   % use \cleardoublepage if you care about odd-page starts
+\phantomsection
+\addcontentsline{toc}{chapter}{References}
+\bibliography{references}
 
 \appendix
 \chapter{Extra Stuff}\label{app:extra}
